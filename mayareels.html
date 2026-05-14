@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="עריכת וידאו מקצועית לעסקים קטנים ויוטיוברים — MayaReels">
+<title>MayaReels | עריכת וידאו מקצועית</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #0c0c0c;
+    --dark: #141414;
+    --dark2: #1e1e1e;
+    --gray: #2a2a2a;
+    --gray2: #3a3a3a;
+    --silver: #888;
+    --light: #e8e8e8;
+    --white: #f5f5f0;
+    --accent: #e86c2c;
+    --accent2: #2cc9b5;
+    --accent-glow: rgba(232,108,44,0.18);
+    --teal-glow: rgba(44,201,181,0.15);
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'Heebo', sans-serif;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease2: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+    direction: rtl;
+  }
+
+  ::selection { background: var(--accent); color: #fff; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: fixed; top: 0; right: 0; left: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    transition: background 0.4s var(--ease), backdrop-filter 0.4s;
+  }
+  nav.scrolled {
+    background: rgba(12,12,12,0.92);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 1.5rem; font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.85rem; font-weight: 400; color: var(--silver);
+    text-decoration: none; letter-spacing: 0.3px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    background: var(--accent);
+    color: #fff !important;
+    padding: 0.55rem 1.4rem;
+    border-radius: 100px;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    transition: opacity 0.2s, transform 0.2s !important;
+  }
+  .nav-cta:hover { opacity: 0.88; transform: scale(1.03) !important; }
+
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    cursor: pointer; padding: 6px;
+    background: none; border: none;
+  }
+  .hamburger span {
+    display: block; width: 24px; height: 2px;
+    background: var(--white); border-radius: 2px;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  .mobile-menu {
+    display: none; flex-direction: column;
+    position: fixed; inset: 0; z-index: 99;
+    background: rgba(12,12,12,0.97);
+    backdrop-filter: blur(20px);
+    align-items: center; justify-content: center;
+    gap: 2.5rem;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-size: 1.6rem; font-weight: 700; color: var(--white);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .mobile-menu a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-canvas {
+    position: absolute; inset: 0; z-index: 0;
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(232,108,44,0.12);
+    border: 1px solid rgba(232,108,44,0.3);
+    padding: 0.45rem 1.2rem;
+    border-radius: 100px;
+    font-size: 0.8rem; font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 1.8rem;
+    letter-spacing: 0.5px;
+    position: relative; z-index: 1;
+    opacity: 0; transform: translateY(20px);
+    animation: fadeUp 0.7s var(--ease) 0.3s forwards;
+  }
+  .hero-badge::before {
+    content: ''; width: 7px; height: 7px;
+    background: var(--accent); border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 5.5vw, 5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    max-width: 820px;
+    margin-bottom: 1.5rem;
+    position: relative; z-index: 1;
+    opacity: 0; transform: translateY(30px);
+    animation: fadeUp 0.8s var(--ease) 0.5s forwards;
+  }
+  .hero h1 .accent { color: var(--accent); }
+  .hero h1 .teal { color: var(--accent2); }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--silver);
+    max-width: 560px;
+    line-height: 1.8;
+    margin-bottom: 3rem;
+    position: relative; z-index: 1;
+    opacity: 0; transform: translateY(20px);
+    animation: fadeUp 0.7s var(--ease) 0.7s forwards;
+  }
+
+  .hero-btns {
+    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+    position: relative; z-index: 1;
+    opacity: 0; transform: translateY(20px);
+    animation: fadeUp 0.7s var(--ease) 0.9s forwards;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 0.9rem 2.2rem;
+    border-radius: 100px;
+    font-family: var(--font-body);
+    font-size: 0.95rem; font-weight: 500;
+    text-decoration: none;
+    cursor: pointer; border: none;
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), opacity 0.2s;
+    letter-spacing: 0.2px;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 30px rgba(232,108,44,0.3);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 0 50px rgba(232,108,44,0.5);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid var(--gray2);
+  }
+  .btn-outline:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+    transform: translateY(-2px);
+  }
+  .btn-teal {
+    background: var(--accent2);
+    color: #0c0c0c;
+    font-weight: 600;
+    box-shadow: 0 0 30px rgba(44,201,181,0.2);
+  }
+  .btn-teal:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 0 50px rgba(44,201,181,0.4);
+  }
+  .btn-wa {
+    background: #25D366;
+    color: #fff;
+    font-size: 1.05rem;
+    padding: 1rem 2.5rem;
+    box-shadow: 0 0 30px rgba(37,211,102,0.25);
+  }
+  .btn-wa:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 0 60px rgba(37,211,102,0.5);
+  }
+  .btn-wa svg { width: 22px; height: 22px; fill: #fff; }
+
+  .hero-scroll {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    z-index: 1; opacity: 0;
+    animation: fadeUp 0.7s var(--ease) 1.4s forwards;
+  }
+  .hero-scroll span { font-size: 0.72rem; color: var(--silver); letter-spacing: 2px; text-transform: uppercase; }
+  .scroll-line {
+    width: 1px; height: 40px; background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollAnim 1.8s infinite;
+  }
+  @keyframes scrollAnim { 0%{opacity:0;transform:scaleY(0);transform-origin:top} 40%{opacity:1;transform:scaleY(1)} 80%{opacity:0;transform:scaleY(1);transform-origin:bottom} 100%{opacity:0} }
+
+  @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+
+  /* ── SECTIONS GENERAL ── */
+  section { padding: 7rem 2rem; position: relative; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  .section-eyebrow {
+    font-size: 0.72rem; font-weight: 500; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-eyebrow::after { content: ''; flex: 1; max-width: 50px; height: 1px; background: var(--accent); }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 800; letter-spacing: -1.5px;
+    line-height: 1.1; margin-bottom: 1.2rem;
+  }
+  .section-title .accent { color: var(--accent); }
+  .section-title .teal { color: var(--accent2); }
+  .section-desc { font-size: 1rem; color: var(--silver); line-height: 1.8; max-width: 500px; }
+
+  /* reveal on scroll */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ── WHY ── */
+  .why-section { background: var(--dark); }
+  .why-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;
+    margin-top: 4rem;
+  }
+  .why-card {
+    background: var(--dark2);
+    border: 1px solid var(--gray);
+    border-radius: 16px;
+    padding: 2rem 1.6rem;
+    transition: border-color 0.3s, transform 0.3s var(--ease), box-shadow 0.3s;
+    cursor: default;
+  }
+  .why-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(232,108,44,0.1);
+  }
+  .why-icon {
+    width: 52px; height: 52px;
+    background: var(--accent-glow);
+    border: 1px solid rgba(232,108,44,0.2);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.4rem;
+  }
+  .why-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.6rem; }
+  .why-card p { font-size: 0.88rem; color: var(--silver); line-height: 1.7; }
+
+  /* ── PACKAGES ── */
+  .packages-section { background: var(--black); overflow: hidden; }
+  .packages-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+    margin-top: 4rem; align-items: start;
+  }
+  .pkg-card {
+    background: var(--dark);
+    border: 1px solid var(--gray);
+    border-radius: 20px;
+    padding: 2.2rem 2rem;
+    position: relative;
+    transition: border-color 0.3s, transform 0.3s var(--ease), box-shadow 0.3s;
+  }
+  .pkg-card:hover { transform: translateY(-4px); }
+  .pkg-card.featured {
+    border-color: var(--accent);
+    background: linear-gradient(145deg, #1e1a16 0%, #1e1e1e 100%);
+    box-shadow: 0 0 60px rgba(232,108,44,0.12), 0 0 0 1px var(--accent);
+    transform: scale(1.03);
+  }
+  .pkg-card.featured:hover { transform: scale(1.03) translateY(-4px); }
+  .pkg-badge {
+    position: absolute; top: -14px; right: 50%; transform: translateX(50%);
+    background: var(--accent);
+    color: #fff; font-size: 0.72rem; font-weight: 700;
+    padding: 4px 16px; border-radius: 100px;
+    letter-spacing: 1px; text-transform: uppercase; white-space: nowrap;
+  }
+  .pkg-name {
+    font-family: var(--font-display);
+    font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px;
+    margin-bottom: 0.3rem;
+  }
+  .pkg-tagline { font-size: 0.85rem; color: var(--silver); margin-bottom: 1.8rem; }
+  .pkg-price {
+    font-family: var(--font-display);
+    font-size: 2rem; font-weight: 800;
+    color: var(--accent); letter-spacing: -1px;
+    margin-bottom: 0.3rem;
+  }
+  .pkg-period { font-size: 0.78rem; color: var(--silver); margin-bottom: 1.8rem; }
+  .pkg-divider { height: 1px; background: var(--gray); margin: 1.5rem 0; }
+  .pkg-features { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+  .pkg-features li {
+    font-size: 0.88rem; color: var(--light);
+    display: flex; align-items: flex-start; gap: 0.7rem; line-height: 1.4;
+  }
+  .pkg-features li::before {
+    content: '✓'; color: var(--accent2); font-weight: 700;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .pkg-note {
+    font-size: 0.75rem; color: var(--silver);
+    border-top: 1px solid var(--gray);
+    padding-top: 1rem; margin-top: -0.5rem; margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+  .pkg-cta {
+    display: block; text-align: center;
+    padding: 0.8rem; border-radius: 100px;
+    font-size: 0.9rem; font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s var(--ease);
+    cursor: pointer; border: none;
+    width: 100%;
+  }
+  .pkg-cta-accent { background: var(--accent); color: #fff; }
+  .pkg-cta-accent:hover { box-shadow: 0 0 30px rgba(232,108,44,0.4); transform: translateY(-2px); }
+  .pkg-cta-outline { border: 1px solid var(--gray2); color: var(--white); background: transparent; }
+  .pkg-cta-outline:hover { border-color: var(--accent2); color: var(--accent2); transform: translateY(-2px); }
+  .pkg-cta-teal { background: var(--accent2); color: var(--black); }
+  .pkg-cta-teal:hover { box-shadow: 0 0 30px rgba(44,201,181,0.3); transform: translateY(-2px); }
+
+  /* ── HOW IT WORKS ── */
+  .how-section { background: var(--dark); }
+  .timeline {
+    display: flex; flex-direction: column; gap: 0;
+    margin-top: 4rem; max-width: 600px;
+  }
+  .timeline-item {
+    display: flex; gap: 1.5rem; position: relative;
+    padding-bottom: 2.5rem;
+  }
+  .timeline-item:last-child { padding-bottom: 0; }
+  .timeline-left {
+    display: flex; flex-direction: column; align-items: center;
+    flex-shrink: 0;
+  }
+  .timeline-num {
+    width: 46px; height: 46px;
+    background: var(--accent-glow);
+    border: 1px solid rgba(232,108,44,0.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1rem; font-weight: 800; color: var(--accent);
+    flex-shrink: 0;
+    position: relative; z-index: 1;
+  }
+  .timeline-line {
+    width: 1px; flex: 1; min-height: 30px;
+    background: linear-gradient(to bottom, rgba(232,108,44,0.4), rgba(44,201,181,0.1));
+    margin-top: 6px;
+  }
+  .timeline-item:last-child .timeline-line { display: none; }
+  .timeline-content { padding-top: 10px; }
+  .timeline-content h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .timeline-content p { font-size: 0.88rem; color: var(--silver); line-height: 1.7; }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials-section { background: var(--black); }
+  .testimonials-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+    margin-top: 4rem;
+  }
+  .testimonial-card {
+    background: var(--dark);
+    border: 1px solid var(--gray);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: border-color 0.3s, transform 0.3s var(--ease);
+  }
+  .testimonial-card:hover { border-color: var(--accent2); transform: translateY(-4px); }
+  .stars { display: flex; gap: 4px; margin-bottom: 1rem; }
+  .star { color: #f5c518; font-size: 1rem; }
+  .testimonial-text {
+    font-size: 0.9rem; color: var(--light); line-height: 1.8;
+    margin-bottom: 1.5rem; font-style: italic;
+  }
+  .testimonial-text::before { content: '"'; font-size: 2rem; color: var(--accent); line-height: 0; vertical-align: -0.5rem; margin-left: 2px; }
+  .testimonial-author {
+    display: flex; align-items: center; gap: 0.8rem;
+    border-top: 1px solid var(--gray); padding-top: 1.2rem;
+  }
+  .author-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .av1 { background: rgba(232,108,44,0.2); color: var(--accent); }
+  .av2 { background: rgba(44,201,181,0.2); color: var(--accent2); }
+  .av3 { background: rgba(150,150,200,0.2); color: #aab; }
+  .author-name { font-size: 0.88rem; font-weight: 600; }
+  .author-role { font-size: 0.75rem; color: var(--silver); }
+
+  /* ── CTA BAND ── */
+  .cta-band {
+    background: linear-gradient(135deg, #141414 0%, #1a1208 50%, #141414 100%);
+    border-top: 1px solid rgba(232,108,44,0.15);
+    border-bottom: 1px solid rgba(232,108,44,0.15);
+    padding: 7rem 2rem;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .cta-band::before {
+    content: ''; position: absolute;
+    top: -80px; left: 50%; transform: translateX(-50%);
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(232,108,44,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-band h2 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: 800; letter-spacing: -2px; line-height: 1.1;
+    margin-bottom: 1.2rem; position: relative; z-index: 1;
+  }
+  .cta-band p { font-size: 1rem; color: var(--silver); margin-bottom: 2.5rem; position: relative; z-index: 1; }
+  .cta-band .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--dark);
+    border-top: 1px solid var(--gray);
+    padding: 3rem 2rem;
+  }
+  .footer-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1.5rem;
+  }
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 1.3rem; font-weight: 800;
+    color: var(--white); text-decoration: none;
+  }
+  .footer-logo span { color: var(--accent); }
+  .footer-tagline { font-size: 0.78rem; color: var(--silver); margin-top: 4px; }
+  .footer-socials { display: flex; gap: 1rem; }
+  .social-link {
+    width: 40px; height: 40px;
+    background: var(--dark2); border: 1px solid var(--gray);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.2s, background 0.2s;
+  }
+  .social-link:hover { border-color: var(--accent); background: var(--accent-glow); transform: translateY(-2px); }
+  .social-link svg { width: 18px; height: 18px; fill: var(--silver); transition: fill 0.2s; }
+  .social-link:hover svg { fill: var(--accent); }
+  .social-link.wa:hover svg { fill: #25D366; }
+  .social-link.wa:hover { border-color: #25D366; background: rgba(37,211,102,0.1); }
+  .social-link.ig:hover svg { fill: #e1306c; }
+  .social-link.ig:hover { border-color: #e1306c; background: rgba(225,48,108,0.1); }
+  .social-link.yt:hover svg { fill: #ff0000; }
+  .social-link.yt:hover { border-color: #ff0000; background: rgba(255,0,0,0.1); }
+  .footer-copy { font-size: 0.75rem; color: var(--silver); }
+
+  /* ── HERO CANVAS ANIMATION ── */
+  canvas { display: block; }
+
+  /* ── NOISE TEXTURE ── */
+  .noise {
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none; opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .hero h1 { font-size: clamp(2rem, 8vw, 3rem); }
+    .why-grid { grid-template-columns: repeat(2, 1fr); }
+    .packages-grid { grid-template-columns: 1fr; }
+    .pkg-card.featured { transform: scale(1); }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .section { padding: 5rem 1.5rem; }
+  }
+  @media (max-width: 600px) {
+    .why-grid { grid-template-columns: 1fr; }
+    .hero-btns { flex-direction: column; align-items: center; }
+    .cta-band .cta-btns { flex-direction: column; align-items: center; }
+    .footer-inner { flex-direction: column; align-items: flex-start; }
+    section { padding: 4rem 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">Maya<span>Reels</span></a>
+  <ul class="nav-links">
+    <li><a href="#why">למה אני</a></li>
+    <li><a href="#packages">חבילות</a></li>
+    <li><a href="#how">איך עובד</a></li>
+    <li><a href="#contact" class="nav-cta">בואו נדבר</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="תפריט">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#why" onclick="closeMobile()">למה אני</a>
+  <a href="#packages" onclick="closeMobile()">חבילות</a>
+  <a href="#how" onclick="closeMobile()">איך עובד</a>
+  <a href="#contact" onclick="closeMobile()" style="color:var(--accent)">בואו נדבר</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <canvas class="hero-canvas" id="heroCanvas"></canvas>
+
+  <div class="hero-badge">עריכת וידאו מקצועית לעסקים ויוצרים</div>
+
+  <h1>
+    עורכת תוכן וידאו<br>
+    לעסקים קטנים —<br>
+    מיוטיוב ועד <span class="accent">Reels</span> ו<span class="teal">Shorts</span>
+  </h1>
+
+  <p class="hero-sub">
+    אני הופכת חומרי גלם לסרטונים שמייצרים נראות, חשיפה ונוכחות מקצועית ברשת.
+  </p>
+
+  <div class="hero-btns">
+    <a href="https://wa.me/972528952077?text=היי, אני מעוניין/ת להתחיל לעבוד איתך!" class="btn btn-primary" target="_blank" rel="noopener">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      כבר מוכנים להתחיל
+    </a>
+    <a href="#packages" class="btn btn-outline">צפו בחבילות ↓</a>
+  </div>
+
+  <div class="hero-scroll">
+    <span>גלול</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why-section" id="why">
+  <div class="container">
+    <div class="section-eyebrow reveal">למה לעבוד איתי</div>
+    <h2 class="section-title reveal reveal-delay-1">הסיבות שגורמות<br>ללקוחות <span class="accent">להישאר</span></h2>
+
+    <div class="why-grid">
+      <div class="why-card reveal reveal-delay-1">
+        <div class="why-icon">⏱</div>
+        <h3>חוסכת זמן לעסק</h3>
+        <p>אתם מתמקדים במה שאתם עושים הכי טוב — אני אטפל בכל עניין הוידאו מהתחלה ועד הסוף.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-2">
+        <div class="why-icon">✨</div>
+        <h3>נראות מקצועית</h3>
+        <p>סרטונים שנראים ומרגישים כמו מותג גדול — בלי לשלם לסוכנות יקרה.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-3">
+        <div class="why-icon">📱</div>
+        <h3>מותאם ליוטיוב ורשתות</h3>
+        <p>כל פורמט, כל פלטפורמה. YouTube, Instagram Reels, TikTok, Shorts — מכוסה.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-4">
+        <div class="why-icon">🔁</div>
+        <h3>עבודה חודשית קבועה</h3>
+        <p>שירות מנוי חודשי עם מסירה מסודרת — ללא הפתעות, ללא כאבי ראש.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PACKAGES -->
+<section class="packages-section" id="packages">
+  <div class="container">
+    <div class="section-eyebrow reveal">החבילות שלי</div>
+    <h2 class="section-title reveal reveal-delay-1">בחרו את הרמה<br><span class="teal">שמתאימה לכם</span></h2>
+    <p class="section-desc reveal reveal-delay-2">כל החבילות כוללות מסירה מסודרת, תיאום שוטף ועמידה בלוחות זמנים.</p>
+
+    <div class="packages-grid">
+
+      <!-- CORE -->
+      <div class="pkg-card reveal reveal-delay-1">
+        <div class="pkg-name">ה-Core</div>
+        <div class="pkg-tagline">הבסיס ליוטיוב וסושיאל</div>
+        <div class="pkg-price">₪3,500–5,500</div>
+        <div class="pkg-period">לחודש · כ-15–20 שעות עבודה</div>
+        <div class="pkg-divider"></div>
+        <ul class="pkg-features">
+          <li>2 סרטונים ארוכים (עד 10 דקות)</li>
+          <li>8 סרטוני Shorts / Reels</li>
+          <li>עריכה מתוך חומרים קיימים</li>
+          <li>התאמות לרשתות חברתיות</li>
+        </ul>
+        <a href="https://wa.me/972528952077?text=היי, אני מעוניין/ת בחבילת ה-Core" class="pkg-cta pkg-cta-outline" target="_blank" rel="noopener">אני רוצה להתחיל</a>
+      </div>
+
+      <!-- FULL SERVICE -->
+      <div class="pkg-card featured reveal reveal-delay-2">
+        <div class="pkg-badge">מומלץ</div>
+        <div class="pkg-name">ה-Full Service</div>
+        <div class="pkg-tagline">המנהלת הקריאטיבית שלכם</div>
+        <div class="pkg-price">₪6,000–8,500</div>
+        <div class="pkg-period">לחודש · כ-25–30 שעות עבודה</div>
+        <div class="pkg-divider"></div>
+        <ul class="pkg-features">
+          <li>כל מה שב-Core</li>
+          <li>עיצוב Thumbnail מקצועי</li>
+          <li>אופטימיזציית כותרות</li>
+          <li>אופטימיזציית תיאורים</li>
+          <li>Color Grading מתקדם</li>
+          <li>מעטפת שיווקית מלאה</li>
+        </ul>
+        <a href="https://wa.me/972528952077?text=היי, אני מעוניין/ת בחבילת Full Service" class="pkg-cta pkg-cta-accent" target="_blank" rel="noopener">אני רוצה Full Service</a>
+      </div>
+
+      <!-- ARCHIVE ADD-ON -->
+      <div class="pkg-card reveal reveal-delay-3">
+        <div class="pkg-name">ניהול ארכיון</div>
+        <div class="pkg-tagline">תוספת שירות חודשית</div>
+        <div class="pkg-price">₪300–600</div>
+        <div class="pkg-period">לחודש · לפי נפח</div>
+        <div class="pkg-divider"></div>
+        <ul class="pkg-features">
+          <li>סידור חומרי גלם</li>
+          <li>קטלוג לפי נושאים ותאריכים</li>
+          <li>גישה מהירה לחומרים</li>
+          <li>עבודה מול Google Drive</li>
+        </ul>
+        <p class="pkg-note">* עלות האחסון עצמה משולמת ישירות לספק הענן.</p>
+        <a href="https://wa.me/972528952077?text=היי, אני מעוניין/ת להוסיף ניהול ארכיון" class="pkg-cta pkg-cta-teal" target="_blank" rel="noopener">להוסיף לשירות</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;">
+      <div>
+        <div class="section-eyebrow reveal">התהליך</div>
+        <h2 class="section-title reveal reveal-delay-1">איך זה<br><span class="accent">עובד?</span></h2>
+        <p class="section-desc reveal reveal-delay-2">תהליך פשוט ומסודר שחוסך לכם זמן וכאבי ראש.</p>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item reveal reveal-delay-1">
+          <div class="timeline-left">
+            <div class="timeline-num">1</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <h3>שולחים חומרי גלם</h3>
+            <p>מעלים לתיקיית Drive משותפת — קבצי וידאו, הנחיות, לינקים. זהו.</p>
+          </div>
+        </div>
+        <div class="timeline-item reveal reveal-delay-2">
+          <div class="timeline-left">
+            <div class="timeline-num">2</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <h3>אני עורכת ומסדרת</h3>
+            <p>עריכה מקצועית, כיתוביות, מוזיקה, Color Grading — לפי הסגנון שלכם.</p>
+          </div>
+        </div>
+        <div class="timeline-item reveal reveal-delay-3">
+          <div class="timeline-left">
+            <div class="timeline-num">3</div>
+            <div class="timeline-line"></div>
+          </div>
+          <div class="timeline-content">
+            <h3>מקבלים תוכן מוכן לפרסום</h3>
+            <p>קבצים מוכנים בפורמט המדויק לכל פלטפורמה, מסודרים ומתוייגים.</p>
+          </div>
+        </div>
+        <div class="timeline-item reveal reveal-delay-4">
+          <div class="timeline-left">
+            <div class="timeline-num">4</div>
+          </div>
+          <div class="timeline-content">
+            <h3>מעלים ומתחילים לצמוח</h3>
+            <p>מפרסמים, צוברים צפיות ונוכחות — ואנחנו מתחילים את החודש הבא.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band" id="contact">
+  <div class="container" style="max-width:700px">
+    <div class="section-eyebrow reveal" style="justify-content:center">מוכנים?</div>
+    <h2 class="reveal reveal-delay-1">מוכנים להפוך את התוכן שלכם<br><span style="color:var(--accent)">למנוע צמיחה?</span></h2>
+    <p class="reveal reveal-delay-2">שלחו הודעה ואחזור אלכם תוך 24 שעות. ללא התחייבות.</p>
+    <div class="cta-btns reveal reveal-delay-3">
+      <a href="https://wa.me/972528952077?text=היי מאיה, אני מעוניין/ת לשמוע עוד על השירותים שלך" class="btn btn-wa" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        שלחו הודעה בוואטסאפ
+      </a>
+      <a href="#packages" class="btn btn-outline">לחבילות ←</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <a href="#" class="footer-logo">Maya<span>Reels</span></a>
+      <p class="footer-tagline">עריכת וידאו מקצועית לעסקים ויוצרים</p>
+    </div>
+    <div class="footer-socials">
+      <!-- WhatsApp -->
+      <a href="https://wa.me/972528952077" class="social-link wa" target="_blank" rel="noopener" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      </a>
+
+    </div>
+    <div class="footer-copy">© 2025 MayaReels. כל הזכויות שמורות.</div>
+  </div>
+</footer>
+
+<script>
+// ── NAVBAR SCROLL ──
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// ── HAMBURGER ──
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.toggle('open');
+});
+function closeMobile() {
+  mobileMenu.classList.remove('open');
+}
+
+// ── SCROLL REVEAL ──
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+reveals.forEach(el => observer.observe(el));
+
+// ── HERO CANVAS ──
+const canvas = document.getElementById('heroCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, particles, frame = 0;
+
+function resize() {
+  W = canvas.width = canvas.offsetWidth;
+  H = canvas.height = canvas.offsetHeight;
+}
+
+function initParticles() {
+  particles = [];
+  const count = Math.min(Math.floor((W * H) / 14000), 60);
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      size: Math.random() * 1.5 + 0.5,
+      type: Math.floor(Math.random() * 4), // 0:circle, 1:play, 2:line, 3:wave
+      color: Math.random() > 0.6 ? '#e86c2c' : Math.random() > 0.5 ? '#2cc9b5' : '#444',
+      alpha: Math.random() * 0.5 + 0.1,
+      rot: Math.random() * Math.PI * 2,
+      rotV: (Math.random() - 0.5) * 0.005,
+      scale: Math.random() * 1.2 + 0.4,
+      life: Math.random() * 200,
+    });
+  }
+}
+
+function drawPlay(x, y, s, alpha, color) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1;
+  const r = s * 12;
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x - r * 0.3, y - r * 0.45);
+  ctx.lineTo(x + r * 0.5, y);
+  ctx.lineTo(x - r * 0.3, y + r * 0.45);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawTimeline(x, y, s, alpha, color) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1;
+  const w = s * 24, h = s * 6;
+  ctx.strokeRect(x - w / 2, y - h / 2, w, h);
+  const seg = Math.floor(Math.random() * 3) + 2;
+  ctx.fillStyle = color;
+  ctx.globalAlpha = alpha * 0.6;
+  for (let i = 0; i < seg; i++) {
+    const bx = x - w / 2 + (i * (w / seg)) + 2;
+    const bw = (w / seg) * (0.3 + Math.random() * 0.5);
+    ctx.fillRect(bx, y - h / 2 + 2, bw, h - 4);
+  }
+  ctx.restore();
+}
+
+function drawWave(x, y, s, alpha, color) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1;
+  const bars = 8;
+  const bw = s * 3;
+  const totalW = bars * bw * 1.4;
+  for (let i = 0; i < bars; i++) {
+    const bh = (Math.sin(i * 0.9 + frame * 0.03) * 0.5 + 0.5) * s * 16 + s * 4;
+    const bx = x - totalW / 2 + i * bw * 1.4;
+    ctx.beginPath();
+    ctx.moveTo(bx, y - bh / 2);
+    ctx.lineTo(bx, y + bh / 2);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawDot(x, y, s, alpha, color) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(x, y, s * 2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  ctx.clearRect(0, 0, W, H);
+  frame++;
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.rot += p.rotV;
+    p.life++;
+    if (p.x < -50) p.x = W + 50;
+    if (p.x > W + 50) p.x = -50;
+    if (p.y < -50) p.y = H + 50;
+    if (p.y > H + 50) p.y = -50;
+
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot);
+    ctx.translate(-p.x, -p.y);
+
+    const type = p.type;
+    if (type === 0) drawPlay(p.x, p.y, p.scale, p.alpha, p.color);
+    else if (type === 1) drawTimeline(p.x, p.y, p.scale, p.alpha, p.color);
+    else if (type === 2) drawWave(p.x, p.y, p.scale, p.alpha, p.color);
+    else drawDot(p.x, p.y, p.scale, p.alpha, p.color);
+
+    ctx.restore();
+  });
+}
+
+window.addEventListener('resize', () => { resize(); initParticles(); });
+resize();
+initParticles();
+animate();
+</script>
+</body>
+</html>
